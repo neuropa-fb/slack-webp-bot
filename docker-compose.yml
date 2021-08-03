@@ -1,0 +1,10 @@
+version: '3.5'
+services:
+  slack-webp-bot:
+    build: .
+    image: node:14
+    restart: unless-stopped
+    environment:
+      SLACK_SIGNING_SECRET: ${SLACK_SIGNING_SECRET}
+      SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
+      SLACK_WEBSOCKET_TOKEN: ${SLACK_WEBSOCKET_TOKEN}
