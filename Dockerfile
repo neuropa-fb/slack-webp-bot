@@ -13,9 +13,9 @@ RUN npx tsc && npm ci --production
 
 FROM node:14-alpine as main
 
-RUN apk --no-cache add curl libwebp libwebp-tools
-
 WORKDIR /app
 COPY --from=builder /app /app/
 
-CMD 'node' '.'
+RUN apk --no-cache add curl libwebp libwebp-tools tesseract-ocr tesseract-ocr-data-pol
+
+CMD 'node' '--enable-source-maps' '.'
