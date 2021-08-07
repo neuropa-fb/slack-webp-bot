@@ -20,7 +20,6 @@ export const fileSharedHandler = async (args: SlackEventMiddlewareArgs<"file_sha
       msg: 'Event received',
       event,
     })
-    console.log(JSON.stringify(event));
     const fileInfo = await client.files.info({ file: file_id })
     if (fileInfo.file?.name?.toLowerCase().endsWith('.webp')) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -45,7 +44,6 @@ export const fileSharedHandler = async (args: SlackEventMiddlewareArgs<"file_sha
       const outPath = `${webpPath}.png`;
 
       await execFileAsync('dwebp', [webpPath, '-o', outPath]);
-      const tesseractResult = await execFileAsync('tesseract', ['-l', 'pol+eng', outPath, '-']).catch(() => null);
       const uploadResult = await client.files.upload({
         channels: channel_id as string,
         initial_comment: ` <@${user_id}> Konwersja z Webp udana`,
@@ -53,6 +51,7 @@ export const fileSharedHandler = async (args: SlackEventMiddlewareArgs<"file_sha
         filetype: 'png',
         filename: outPath.split('/').pop()!,
       });
+      const tesseractResult = await execFileAsync('tesseract', ['-l', 'pol+eng', outPath, '-']).catch(() => null);
 
       const messageId = uploadResult?.file?.shares?.public?.[channel_id]?.[0]?.ts;
       if (messageId && tesseractResult && tesseractResult.stdout.trim()) {
